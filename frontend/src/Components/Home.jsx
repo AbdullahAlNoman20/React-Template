@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Typewriter } from "react-simple-typewriter";
+import Service from "./Service";
 
 const Home = () => {
   return (
@@ -43,6 +44,11 @@ const Home = () => {
             </div>
           </div>
         </div>
+      </section>
+
+{/* Service Section */}
+      <section>
+        <Service></Service>
       </section>
     </div>
   );
