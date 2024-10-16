@@ -16,7 +16,7 @@ const Register = () => {
     const password = form.password.value;
 
     const newUser = { username, email, number, password };
-    console.log(newUser);
+    // console.log(newUser);
 
     // Create Person in FireBase
     createPerson(email, password)

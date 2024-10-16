@@ -25,9 +25,9 @@ const Service = () => {
           </p>
         
       </div>
-      <section className="border grid grid-cols-1 lg:grid-cols-3">
+      <section className="grid grid-cols-1 lg:grid-cols-3">
       {services.map(service => 
-        <ServiceCard key={services.id} service={service}></ServiceCard>
+        <ServiceCard key={service.id} service={service}></ServiceCard>
       )}
       </section>
       

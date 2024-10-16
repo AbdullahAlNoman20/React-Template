@@ -1,35 +1,34 @@
-// import PropTypes from "prop-types";
+import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 
-const ServiceCard = ({service}) => {
-    const {name,description,photo} = service;
-    return (
-        <div className="">
-            <section className="p-5">
+const ServiceCard = ({ service }) => {
+  const {id, name, description, photo } = service;
+  return (
+    <div className="">
+      <section className="p-5">
         <div className="card bg-base-100 shadow-xl border h-[400px]">
           <figure className="px-10 pt-10">
-            <img
-              src={photo}
-              alt="Shoes"
-              className="rounded-xl h-32 "
-            />
+            <img src={photo} alt="photo" className="rounded-xl h-32 " />
           </figure>
           <div className="card-body items-center text-center">
             <h2 className="card-title">{name}</h2>
             <p>{description}</p>
             <div className="card-actions">
-              <button className="btn btn-outline btn-warning">
-                View Details
-              </button>
+              <NavLink to={`/service_details/${service.id}`}>
+                <button className="btn btn-outline btn-warning">
+                  View Details
+                </button>
+              </NavLink>
             </div>
           </div>
         </div>
       </section>
-        </div>
-    );
+    </div>
+  );
 };
 
-// ServiceCard.propTypes = {
-//     children: PropTypes.object,
-//   };
+ServiceCard.propTypes = {
+  children: PropTypes.object,
+};
 
 export default ServiceCard;

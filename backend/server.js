@@ -7,6 +7,8 @@ const app = express()
 
 require('dotenv').config();
 
+// JWT
+const jwt = require('jsonwebtoken');
 
 // Middleware
 app.use(cors())
@@ -35,9 +37,18 @@ db.connect((error)=>{
     }
 })
 
+// Auth Related Work
+app.post('/jwt', async(req,res)=>{
+  const person = req.body;
+  console.log(person)
+  // Create Token
+  const token = jwt.sign(person,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1h'})
+  res.send(token)
+})
 
 
 
+// Data Related Work
 app.get('/',(req,res)=>{
     return res.json("Server is running")
 })

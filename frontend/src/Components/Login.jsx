@@ -1,17 +1,19 @@
 import { useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 
 const Login = () => {
   const { signInPerson, googleLogin } = useContext(AuthContext);
+  const location = useLocation();
   const navigate = useNavigate();
 
   // Google Login
   const handleGoogleLogin = () => {
     googleLogin()
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
       })
       .catch((error) => {
         console.log("Error", error.message);
@@ -22,14 +24,21 @@ const Login = () => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+    // console.log(email, password);
 
     signInPerson(email, password)
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
         e.target.reset();
         toast.success("Login Successfully");
-        navigate("/");
+        // navigate(location?.state ? location?.state : '/');
+        // Get Access Token
+        const person = {email};
+        axios.post('http://localhost:5000/jwt', person)
+        .then(res =>{
+          console.log(res.data)
+        })
+
       })
       .catch((error) => {
         console.error(error);
