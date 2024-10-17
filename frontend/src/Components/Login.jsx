@@ -1,25 +1,16 @@
 import { useContext } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 const Login = () => {
   const { signInPerson, googleLogin } = useContext(AuthContext);
   const location = useLocation();
+  const from = location.state || "/";
   const navigate = useNavigate();
 
-  // Google Login
-  const handleGoogleLogin = () => {
-    googleLogin()
-      .then((result) => {
-        // console.log(result.user);
-      })
-      .catch((error) => {
-        console.log("Error", error.message);
-      });
-  };
-
+  // User Login
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -31,23 +22,50 @@ const Login = () => {
         // console.log(result.user);
         e.target.reset();
         toast.success("Login Successfully");
-        // navigate(location?.state ? location?.state : '/');
+        navigate(from, { replace: true });
         // Get Access Token
-        const person = {email};
-        axios.post('http://localhost:5000/jwt', person)
-        .then(res =>{
-          console.log(res.data)
-        })
-
+        const person = { email };
+        axios
+          .post("http://localhost:5000/jwt", person, { withCredentials: true })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              navigate(location?.state ? location?.state : "/");
+            }
+          });
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
+  // Google Login
+  const handleGoogleLogin = () => {
+    googleLogin()
+      .then((result) => {
+        console.log(result.user);
+        toast.success("Login Successfully");
+        navigate(from, { replace: true });
+        // Get Access Token
+        const person = result.user;
+        axios
+          .post("http://localhost:5000/jwt", person, { withCredentials: true })
+
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              navigate(location?.state ? location?.state : "/");
+            }
+          });
+      })
+      .catch((error) => {
+        console.log("Error", error.message);
+      });
+  };
+
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer />
       <section className="flex justify-center p-4">
         <div className="border w-full max-w-md p-4 rounded-md shadow sm:p-8 dark:bg-gray-50 dark:text-gray-800">
           <h2 className="mb-3 text-3xl font-semibold text-center">
@@ -160,7 +178,7 @@ const Login = () => {
               type="submit"
               className="w-full px-8 py-3 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50"
             >
-              Sign in
+             <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign in 
             </button>
           </form>
         </div>

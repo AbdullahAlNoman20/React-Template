@@ -24,7 +24,7 @@ const Nav = () => {
     <>
       <NavLink to="/">
         <li>
-          <a>Home</a>
+          <a> <i className="fa-solid fa-house"></i> Home</a>
         </li>
       </NavLink>
 
@@ -32,16 +32,30 @@ const Nav = () => {
         <>
           <NavLink to="/profile">
             <li>
-              <a>Profile</a>
+              <a> <i className="fa-solid fa-user"></i>Profile</a>
             </li>
           </NavLink>
         </>
       )}
       <NavLink to="/contact">
         <li>
-          <a>Contact</a>
+          <a><i className="fa-solid fa-phone"></i> Contact</a>
         </li>
       </NavLink>
+      <NavLink to="/developers">
+        <li>
+          <a><i className="fa-solid fa-people-group"></i>Developers</a>
+        </li>
+      </NavLink>
+      {person && (
+        <>
+          <NavLink to="/myCard">
+            <li>
+              <a> <i className="fa-brands fa-opencart"></i> My Card</a>
+            </li>
+          </NavLink>
+        </>
+      )}
     </>
   );
 
@@ -93,13 +107,13 @@ const Nav = () => {
                     onClick={handleSignOut}
                     className="btn btn-outline btn-warning"
                   >
-                    LogOut
+                   LogOut<i className="fa-solid fa-arrow-right-from-bracket"></i> 
                   </button>
                 </NavLink>
               </div>
             ) : (
               <NavLink to="/login">
-                <a className="btn btn-outline btn-warning">Login</a>
+                <a className="btn btn-outline btn-warning"><i className="fa-solid fa-arrow-right-from-bracket"></i> Login</a>
               </NavLink>
             )}
           </div>

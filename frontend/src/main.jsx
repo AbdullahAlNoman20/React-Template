@@ -1,19 +1,22 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./Components/Root.jsx";
 import Error from "./Components/Error.jsx";
 import Home from "./Components/Home.jsx";
 import Login from "./Components/Login.jsx";
+import MyCard from "./Components/MyCard.jsx";
 import Register from "./Components/Register.jsx";
 import Profile from "./Components/Profile.jsx";
 import Contact from "./Components/Contact.jsx";
 import ServiceDetails from "./Components/ServiceDetails.jsx";
 import AuthProvider from "./AuthProvider/AuthProvider.jsx";
 import PrivateRout from "./AuthProvider/PrivateRout.jsx";
+import Developers from "./Components/Developers.jsx";
+import DeveloperDetails from "./Components/DeveloperDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,11 +30,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Profile></Profile>,
+        element: (
+          <PrivateRout>
+            <Profile></Profile>
+          </PrivateRout>
+        ),
       },
       {
         path: "/contact",
-        element: <PrivateRout><Contact></Contact></PrivateRout>,
+        element: (
+          <PrivateRout>
+            <Contact></Contact>
+          </PrivateRout>
+        ),
       },
       {
         path: "/login",
@@ -42,9 +53,24 @@ const router = createBrowserRouter([
         element: <Register></Register>,
       },
       {
+        path: "/myCard",
+        element: <MyCard></MyCard>,
+      },
+      {
         path: "/service_details/:id",
         element: <ServiceDetails></ServiceDetails>,
-        loader: ({params}) => fetch(`services.json/${params.id}`)
+        loader: () => fetch("services.json"),
+      },
+      {
+        path: "/developers",
+        element: <Developers></Developers>,
+        loader: () => fetch("http://localhost:5000/developers"),
+      },
+      {
+        path: "/developers_details/:id",
+        element: <PrivateRout><DeveloperDetails></DeveloperDetails></PrivateRout>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/developers_details/${params.id}`),
       },
     ],
   },

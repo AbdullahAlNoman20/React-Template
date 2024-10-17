@@ -18,7 +18,7 @@ const PrivateRout = ({ children }) => {
   if (person) {
     return children;
   }
-  return <Navigate state={location.pathname} to="/login"></Navigate>;
+  return <Navigate state={location.pathname} replace={true} to="/login"></Navigate>;
 };
 
 // Props Validation

@@ -1,11 +1,10 @@
-import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 
-const ServiceCard = ({ service }) => {
-  const {id, name, description, photo } = service;
-  return (
-    <div className="">
-      <section className="p-5">
+const ProductsCard = ({product}) => {
+    const {id, name, description, photo , price, stock_quantity} = product;
+    return (
+        <div>
+            <section className="p-5">
         <div className="card bg-base-100 shadow-xl border h-[400px]">
           <figure className="px-10 pt-10">
             <img src={photo} alt="photo" className="rounded-xl h-32 " />
@@ -13,8 +12,10 @@ const ServiceCard = ({ service }) => {
           <div className="card-body items-center text-center">
             <h2 className="card-title">{name}</h2>
             <p>{description}</p>
+            <p>Price: {price}$</p>
+            <p>Stock Quantity: {stock_quantity}</p>
             <div className="card-actions">
-              <NavLink to={`/service_details/${service.id}`}>
+              <NavLink to={`/product_details/${product.id}`}>
                 <button className="btn btn-outline btn-warning">
                 <i className="fa-solid fa-circle-info"></i>View Details
                 </button>
@@ -23,12 +24,8 @@ const ServiceCard = ({ service }) => {
           </div>
         </div>
       </section>
-    </div>
-  );
+        </div>
+    );
 };
 
-ServiceCard.propTypes = {
-  children: PropTypes.object,
-};
-
-export default ServiceCard;
+export default ProductsCard;

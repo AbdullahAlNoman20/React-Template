@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet";
 import { Typewriter } from "react-simple-typewriter";
 import Service from "./Service";
+import Products from "./Products";
 
 const Home = () => {
   return (
@@ -39,7 +40,7 @@ const Home = () => {
                 repudiandae et a id nisi.
               </p>
               <button className="btn btn-outline btn-warning">
-                Get Started
+                Get Started <i className="fa-solid fa-arrow-trend-up"></i>
               </button>
             </div>
           </div>
@@ -50,6 +51,12 @@ const Home = () => {
       <section>
         <Service></Service>
       </section>
+
+{/* Products */}
+<section>
+  <Products></Products>
+</section>
+
     </div>
   );
 };

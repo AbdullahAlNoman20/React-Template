@@ -9,9 +9,15 @@ require('dotenv').config();
 
 // JWT
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 // Middleware
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST'], 
+  credentials: true,
+}));
+app.use(cookieParser());
 app.use(express.json())
 
 
@@ -42,20 +48,42 @@ app.post('/jwt', async(req,res)=>{
   const person = req.body;
   console.log(person)
   // Create Token
-  const token = jwt.sign(person,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1h'})
-  res.send(token)
+  const token = jwt.sign(person , process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1d'})
+
+  res
+  .cookie('token', token,{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+  })
+  .send({success: true })
 })
-
-
 
 // Data Related Work
 app.get('/',(req,res)=>{
     return res.json("Server is running")
 })
 
+
+// Auth Related Work
+app.post('/jwt', async(req,res)=>{
+  const person = req.body;
+  console.log(person)
+  // Create Token
+  const token = jwt.sign(person , process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1d'})
+
+  res
+  .cookie('token', token,{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+  })
+  .send({success: true })
+})
+
 // Show All User Info
-app.get("/register_users",(req,res)=>{
-   const sql = "SELECT * FROM register_users";
+app.get("/register_user",(req,res)=>{
+   const sql = "SELECT * FROM register_user";
    db.query(sql,(err,data)=>{
     if(err){
         console.error("error " + err.stack)
@@ -65,9 +93,9 @@ app.get("/register_users",(req,res)=>{
    })
 })
 
-// Show All packages Info
-app.get("/package",(req,res)=>{
-   const sql = "SELECT * FROM package";
+// Show All developers Info
+app.get("/developers",(req,res)=>{
+   const sql = "SELECT * FROM developers";
    db.query(sql,(err,data)=>{
     if(err){
         console.error("error " + err.stack)
@@ -76,11 +104,37 @@ app.get("/package",(req,res)=>{
     return res.json(data)
    })
 })
+// Show All products Info
+app.get("/products",(req,res)=>{
+   const sql = "SELECT * FROM products";
+   db.query(sql,(err,data)=>{
+    if(err){
+        console.error("error " + err.stack)
+        return res.json("Error occurs: beep beep")
+    }
+    return res.json(data)
+    console.log('tok tok token',req.cookies.token)
+   })
+})
 
-// Specific Package
-app.get('/package_details/:id',(req,res)=>{
+// Specific developers
+app.get('/developers_details/:id',(req,res)=>{
     const id = req.params.id;
-    const query = 'SELECT * FROM package WHERE id = ?';
+    const query = 'SELECT * FROM developers WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+     if(err){
+        console.error('Error fetching package:', err);
+        res.status(500).send('Error fetching package');
+    }
+     else {
+        res.json(result[0]);
+      }
+    })
+ })
+// Specific products
+app.get('/product_details/:id',(req,res)=>{
+    const id = req.params.id;
+    const query = 'SELECT * FROM products WHERE id = ?';
     db.query(query, [id], (err, result) => {
      if(err){
         console.error('Error fetching package:', err);

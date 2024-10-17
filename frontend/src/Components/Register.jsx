@@ -1,10 +1,13 @@
-import { Navigate, NavLink } from "react-router-dom";
+import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import { useContext } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 
 const Register = () => {
   const { createPerson } = useContext(AuthContext);
+  const location = useLocation();
+  const from = location.state || '/'
 
   // Event Handler
   const handleRegister = async (event) => {
@@ -23,8 +26,18 @@ const Register = () => {
       .then((result) => {
         form.reset();
         toast.success("Registered Successfully");
-        Navigate("/");
-        console.log(result.person);
+        Navigate(from , {replace:true})
+        // console.log(result.person);
+        // Get Access Token
+        const person = { email };
+        axios
+          .post('http://localhost:5000/jwt', person, { withCredentials: true })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              Navigate(location?.state ? location?.state : "/");
+            }
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -118,7 +131,7 @@ const Register = () => {
               type="submit"
               className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600"
             >
-              Sign in
+              Register Now <i className="fa-regular fa-registered"></i>
             </button>
           </form>
 
