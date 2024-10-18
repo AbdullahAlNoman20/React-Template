@@ -17,6 +17,8 @@ import AuthProvider from "./AuthProvider/AuthProvider.jsx";
 import PrivateRout from "./AuthProvider/PrivateRout.jsx";
 import Developers from "./Components/Developers.jsx";
 import DeveloperDetails from "./Components/DeveloperDetails.jsx";
+import ProductDetails from "./Components/ProductDetails.jsx";
+import ProductOrder from "./Components/ProductOrder.jsx";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +73,18 @@ const router = createBrowserRouter([
         element: <PrivateRout><DeveloperDetails></DeveloperDetails></PrivateRout>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/developers_details/${params.id}`),
+      },
+      {
+        path: "/product_details/:p_id",
+        element: <PrivateRout><ProductDetails></ProductDetails></PrivateRout>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/product_details/${params.p_id}`),
+      },
+      {
+        path: "/buyNow/:id",
+        element: <PrivateRout><ProductOrder></ProductOrder></PrivateRout>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/product_details/${params.id}`),
       },
     ],
   },

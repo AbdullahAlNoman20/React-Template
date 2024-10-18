@@ -14,12 +14,36 @@ const cookieParser = require('cookie-parser');
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['GET', 'POST'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE' ], 
   credentials: true,
 }));
 app.use(cookieParser());
 app.use(express.json())
 
+// Custom Middleware
+// const logger = (req, res, next) =>{
+//   console.log('Called', req.host, req.originalUrl)
+//   next()
+// }
+
+const verifyToken = (req,res,next) =>{
+  const token = req.cookies?.token;
+  // console.log('Token Value', token)
+  if(!token){
+    return res.status(401).send({message: 'Not authorized'})
+  }
+  jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,decoded) =>{
+    // error
+    if(err){
+      return res.status(401).send({message: 'Unauthorized'})
+    }
+    // When Token is Valid
+    console.log('Value in the Token',decoded)
+    req.person = decoded 
+    next()
+  })
+  
+}
 
 
 // Create Connection with the Database
@@ -131,10 +155,11 @@ app.get('/developers_details/:id',(req,res)=>{
       }
     })
  })
+ 
 // Specific products
-app.get('/product_details/:id',(req,res)=>{
-    const id = req.params.id;
-    const query = 'SELECT * FROM products WHERE id = ?';
+app.get('/product_details/:p_id',(req,res)=>{
+    const id = req.params.p_id;
+    const query = 'SELECT * FROM products WHERE p_id = ?';
     db.query(query, [id], (err, result) => {
      if(err){
         console.error('Error fetching package:', err);
@@ -149,26 +174,56 @@ app.get('/product_details/:id',(req,res)=>{
 
 
 // Post Data In DB
-app.post('/register_user', async(req,res)=>{
+app.post('/order_info', (req, res) => {
+  const order = req.body;
+  const name = req.body.name;
+  const date = req.body.date;
+  const email = req.body.email;
+  const price = req.body.price;
+  const p_id = req.body.p_id; // Product ID
+  const photo = req.body.photo; // Product Photo
 
-    const newUser = req.body;
-        const username =  req.body.username
-        const email = req.body.email
-        const number = req.body.number
-        const password = req.body.password
-    console.log(newUser)
-    // newUser.id = register_users.length + 1;
+  console.log(order);
 
-      db.query ("INSERT INTO register_user (username,email,number,password) VALUES(?,?,?,?)",[username,email,number,password]),
-        (err,result)=>{
-            if(result){
-                res.send(result)
-            }
-            else{
-                res.send(err)
-            }
-        }
-})
+  db.query(
+      "INSERT INTO order_info (name, date, email, price, p_id, photo) VALUES (?, ?, ?, ?, ?, ?)", 
+      [name, date, email, price, p_id, photo], 
+      (err, result) => {
+          if (err) {
+              console.error("Error inserting into the database: ", err);
+              res.status(500).send(err); 
+          } else {
+            res.send({ insertedId: result.insertId }); 
+          }
+      }
+  );
+});
+
+// Get Orders by User Email
+app.get('/order_info/:email', verifyToken, (req, res) => {
+  const email = req.params.email;
+
+  db.query(
+      "SELECT * FROM order_info WHERE email = ?", [email], 
+      (err, result) => {
+          if (err) {
+              console.error("Error fetching orders from database:", err);
+              res.status(500).send(err);
+          } else {
+
+            // if(req.query.email !== req.person.email){
+            //   return res.status(403).send({Message: 'Unauthorized'})
+            // }
+           
+              res.send(result);
+              // console.log('This is our Access Token : ',req.cookies.token)
+              console.log('Verified Person', req.person)
+            
+              
+          }
+      }
+  );
+});
 
 
 // Post Data In DB
@@ -191,6 +246,25 @@ app.post('/package', async(req,res)=>{
         }
 })
 
+
+// Delete Single Order
+app.delete('/order_info/:id', (req, res) => {
+    const id = req.params.id;
+  
+    const query = 'DELETE FROM order_info WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error('Error deleting data:', err);
+        res.status(500).send('Error deleting data');
+      } else {
+        if (result.affectedRows > 0) {
+          res.json({ success: true, message: `Deleted entry with ID: ${id}`, deletedCount: result.affectedRows });
+        } else {
+          res.json({ success: false, message: 'No rows deleted' });
+        }
+      }
+    });
+  });
 
 // Delete Single Data
 app.delete('/delete_package/:id', (req, result) => {

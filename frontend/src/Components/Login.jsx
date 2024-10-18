@@ -47,7 +47,7 @@ const Login = () => {
         toast.success("Login Successfully");
         navigate(from, { replace: true });
         // Get Access Token
-        const person = result.user;
+        const person = result.user.email;
         axios
           .post("http://localhost:5000/jwt", person, { withCredentials: true })
 

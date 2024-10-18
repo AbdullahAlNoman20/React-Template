@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 const ProductsCard = ({product}) => {
-    const {id, name, description, photo , price, stock_quantity} = product;
+    const {p_id, name, description, photo , price, stock_quantity} = product;
     return (
         <div>
             <section className="p-5">
@@ -15,7 +15,7 @@ const ProductsCard = ({product}) => {
             <p>Price: {price}$</p>
             <p>Stock Quantity: {stock_quantity}</p>
             <div className="card-actions">
-              <NavLink to={`/product_details/${product.id}`}>
+              <NavLink to={`/product_details/${product.p_id}`}>
                 <button className="btn btn-outline btn-warning">
                 <i className="fa-solid fa-circle-info"></i>View Details
                 </button>
